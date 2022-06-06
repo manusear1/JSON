@@ -1,25 +1,115 @@
 window.onload = function(){
+    var url = 'https://profrodolfo.com.br/projeto/';
+    var d = document.querySelector('.dados');
 
-var url = "https://profrodolfo.com.br/projeto/";
-fetch(url)
-.then(resposta => {
-	return resposta.json();
-})
-.then( function (json){
-	var d = document.querySelector('.dados');
-    var texto = '';
-	for(i = 0; i < json.length ; i++){
-		texto += '<div class="row">';
-        texto+= '<div class="col-4 ">';
-        texto+= '<img class="img-fluid" src="https://profrodolfo.com.br/projeto/'+json[i].foto+'">';
-        texto += '</div>';
-        texto += '<div class="col-">'; 
-        texto += '<h1>'+json[i].nome+'</h1>';
-        texto += '<h3>'+json[i].valor+'</h3>';
-        texto += '</div>';
-        texto += '</div>';
-	}
-    d.innerHTML += texto;
-})
-.catch();
+    function ExibirProdutos(){
+        fetch(url)
+        .then(resposta => {
+            return resposta.json();
+        })
+        .then((json)=>{        
+            for(x = 0; x < json.length; x++){
+            		d.innerHTML+= `
+                    <div class="row">
+                        <div class="col-4">
+                            <img class="img-fluid" src="https://profrodolfo.com.br/projeto/${json[x].foto}">
+                        </div>
+                        <div class="col-7">
+                            <h1>${json[x].nome}</h1>
+                            <h3>${json[x].valor}</h3>
+                        </div>
+                    </div>
+                	`;
+            }
+        }).catch();
+    }
+
+    ExibirProdutos();
+
+    function ExibirPorNome(nome){
+    	fetch(url)
+        .then(resposta => {
+            return resposta.json();
+        })
+        .then((json)=>{
+        	nome = nome.toUpperCase();      
+            for(x = 0; x < json.length; x++){
+            	if(json[x].nome.toUpperCase().includes(nome)){
+            		d.innerHTML+= `
+                    <div class="row">
+                        <div class="col-4">
+                            <img class="img-fluid" src="https://profrodolfo.com.br/projeto/${json[x].foto}">
+                        </div>
+                        <div class="col-7">
+                            <h1>${json[x].nome}</h1>
+                            <h3>${json[x].valor}</h3>
+                        </div>
+                    </div>
+                	`;
+            	}
+            }
+        }).catch();
+    }
+
+    function ExibirPorPreco(preco){
+    	fetch(url)
+        .then(resposta => {
+            return resposta.json();
+        })
+        .then((json)=>{        
+            for(x = 0; x < json.length; x++){
+            	if(json[x].valor<=preco){
+            		d.innerHTML+= `
+                    <div class="row">
+                        <div class="col-4">
+                            <img class="img-fluid" src="https://profrodolfo.com.br/projeto/${json[x].foto}">
+                        </div>
+                        <div class="col-7">
+                            <h1>${json[x].nome}</h1>
+                            <h3>${json[x].valor}</h3>
+                        </div>
+                    </div>
+                	`;
+            	}
+            }
+        }).catch();
+    }
+
+    function ExibirPorPrecoENome(nome, preco){
+    	fetch(url)
+        .then(resposta => {
+            return resposta.json();
+        })
+        .then((json)=>{        
+        	nome = nome.toUpperCase();
+            for(x = 0; x < json.length; x++){
+            	if(json[x].valor<=preco && json[x].nome.toUpperCase().includes(nome)){
+            		d.innerHTML+= `
+                    <div class="row">
+                        <div class="col-4">
+                            <img class="img-fluid" src="https://profrodolfo.com.br/projeto/${json[x].foto}">
+                        </div>
+                        <div class="col-7">
+                            <h1>${json[x].nome}</h1>
+                            <h3>${json[x].valor}</h3>
+                        </div>
+                    </div>
+                	`;
+            	}
+            }
+        }).catch();
+    }
+    
+    document.querySelector('#btn').addEventListener('click', ()=>{
+    	d.innerHTML = '';
+    	let nome = document.querySelector('#kurama').value;
+    	let preco = Number(document.querySelector('#kurenai').value);
+    	if(!nome){
+    		ExibirPorPreco(preco);
+    	}else if(!preco){
+    		ExibirPorNome(nome);
+    	}else if(nome && preco){
+    		ExibirPorPrecoENome(nome, preco);
+    	}
+    })
 }
